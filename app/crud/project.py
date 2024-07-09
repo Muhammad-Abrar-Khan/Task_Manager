@@ -1,13 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from sqlalchemy.orm import Session
+from app.models.project import Project
+from app.schemas.project import ProjectCreate
 
-class Project(Base):
-    __tablename__ = "projects"
+def get_projects(db: Session):
+    return db.query(Project).all()
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+def get_project(db: Session, project_id: int):
+    return db.query(Project).filter(Project.id == project_id).first()
 
-    owner = relationship("User", back_populates="projects")
-    tasks = relationship("Task", back_populates="project")
+def create_project(db: Session, project: ProjectCreate):
+    db_project = Project(name=project.name)
+    db.add(db_project)
+    db.commit()
+    db.refresh(db_project)
+    return db_project

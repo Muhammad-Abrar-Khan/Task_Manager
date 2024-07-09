@@ -1,16 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from sqlalchemy.orm import Session
+from app.models.task import Task
+from app.schemas.task import TaskCreate
 
-class Task(Base):
-    __tablename__ = "tasks"
+def get_tasks(db: Session, project_id: int):
+    return db.query(Task).filter(Task.project_id == project_id).all()
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String)
-    status = Column(String, default="pending")
-    project_id = Column(Integer, ForeignKey("projects.id"))
-    assignee_id = Column(Integer, ForeignKey("users.id"))
+def get_task(db: Session, task_id: int):
+    return db.query(Task).filter(Task.id == task_id).first()
 
-    project = relationship("Project", back_populates="tasks")
-    comments = relationship("Comment", back_populates="task")
+def create_task(db: Session, task: TaskCreate):
+    db_task = Task(title=task.title, description=task.description, project_id=task.project_id, parent_id=task.parent_id)
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return db_task

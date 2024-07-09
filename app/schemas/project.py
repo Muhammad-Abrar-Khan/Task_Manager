@@ -1,13 +1,15 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from pydantic import BaseModel
+from datetime import datetime
 
-class Project(Base):
-    __tablename__ = "projects"
+class ProjectBase(BaseModel):
+    name: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
+class ProjectCreate(ProjectBase):
+    pass
 
-    owner = relationship("User", back_populates="projects")
-    tasks = relationship("Task", back_populates="project")
+class Project(ProjectBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True

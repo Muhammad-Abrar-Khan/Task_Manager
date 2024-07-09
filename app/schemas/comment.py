@@ -1,12 +1,19 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from pydantic import BaseModel
+from datetime import datetime
+from typing import Optional, List
 
-class Comment(Base):
-    __tablename__ = "comments"
+class CommentBase(BaseModel):
+    content: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    content = Column(String)
-    task_id = Column(Integer, ForeignKey("tasks.id"))
+class CommentCreate(CommentBase):
+    task_id: int
+    parent_id: Optional[int] = None
 
-    task = relationship("Task", back_populates="comments")
+class Comment(CommentBase):
+    id: int
+    parent_id: Optional[int] = None
+    task_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True

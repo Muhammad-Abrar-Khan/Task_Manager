@@ -1,15 +1,18 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from sqlalchemy.orm import Session
+from app.models.user import User
+from app.schemas.user import UserCreate
+from app.core.security import get_password_hash
 
-class User(Base):
-    __tablename__ = "users"
+def get_user(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-    role = Column(String, default="user")
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
 
-    projects = relationship("Project", back_populates="owner")
+def create_user(db: Session, user: UserCreate):
+    hashed_password = get_password_hash(user.password)
+    db_user = User(email=user.email, hashed_password=hashed_password, name=user.name)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

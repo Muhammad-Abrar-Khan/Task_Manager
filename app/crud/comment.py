@@ -1,12 +1,16 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from sqlalchemy.orm import Session
+from app.models.comment import Comment
+from app.schemas.comment import CommentCreate
 
-class Comment(Base):
-    __tablename__ = "comments"
+def get_comments(db: Session, task_id: int):
+    return db.query(Comment).filter(Comment.task_id == task_id).all()
 
-    id = Column(Integer, primary_key=True, index=True)
-    content = Column(String)
-    task_id = Column(Integer, ForeignKey("tasks.id"))
+def get_comment(db: Session, comment_id: int):
+    return db.query(Comment).filter(Comment.id == comment_id).first()
 
-    task = relationship("Task", back_populates="comments")
+def create_comment(db: Session, comment: CommentCreate):
+    db_comment = Comment(content=comment.content, task_id=comment.task_id, parent_id=comment.parent_id)
+    db.add(db_comment)
+    db.commit()
+    db.refresh(db_comment)
+    return db_comment

@@ -1,15 +1,16 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from pydantic import BaseModel, EmailStr
 
-class User(Base):
-    __tablename__ = "users"
+class UserBase(BaseModel):
+    email: EmailStr
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-    role = Column(String, default="user")
+class UserCreate(UserBase):
+    password: str
+    name: str
 
-    projects = relationship("Project", back_populates="owner")
+class User(UserBase):
+    id: int
+    is_active: bool
+    is_admin: bool
+
+    class Config:
+        orm_mode = True

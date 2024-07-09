@@ -1,16 +1,22 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from app.db.session import Base
+from pydantic import BaseModel
+from datetime import datetime
+from typing import Optional, List
 
-class Task(Base):
-    __tablename__ = "tasks"
+class TaskBase(BaseModel):
+    title: str
+    description: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String)
-    status = Column(String, default="pending")
-    project_id = Column(Integer, ForeignKey("projects.id"))
-    assignee_id = Column(Integer, ForeignKey("users.id"))
+class TaskCreate(TaskBase):
+    project_id: int
+    parent_id: Optional[int] = None
 
-    project = relationship("Project", back_populates="tasks")
-    comments = relationship("Comment", back_populates="task")
+class Task(TaskBase):
+    id: int
+    parent_id: Optional[int] = None
+    project_id: int
+    status: str
+    assignee_id: Optional[int] = None
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
