@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from app.api.v1.api import api_router
-from app.core.config import settings
+from app.core.config import Settings
 from app.db.base import Base 
+
+settings = Settings()
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
