@@ -15,7 +15,7 @@ class Task(TaskBase):
     parent_id: Optional[int] = None
     project_id: int
     status: str
-    assignee_id: Optional[int] = None
+    owner_id: Optional[int] = None
     created_at: datetime
 
     class Config:

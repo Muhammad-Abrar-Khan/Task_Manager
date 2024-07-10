@@ -14,3 +14,10 @@ def create_comment(db: Session, comment: CommentCreate):
     db.commit()
     db.refresh(db_comment)
     return db_comment
+
+def create_with_owner(db: Session, obj_in: CommentCreate, owner_id: int):
+    db_comment = Comment(content=obj_in.content, task_id=obj_in.task_id, parent_id=obj_in.parent_id, owner_id=owner_id)
+    db.add(db_comment)
+    db.commit()
+    db.refresh(db_comment)
+    return db_comment

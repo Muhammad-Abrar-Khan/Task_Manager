@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional
 
 class CommentBase(BaseModel):
     content: str
@@ -16,4 +16,4 @@ class Comment(CommentBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True  

@@ -14,3 +14,4 @@ class Comment(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     parent = relationship("Comment", remote_side=[id], backref="replies")
     task = relationship("Task", back_populates="comments")
+

@@ -14,3 +14,10 @@ def create_project(db: Session, project: ProjectCreate):
     db.commit()
     db.refresh(db_project)
     return db_project
+
+def create_with_owner(db: Session, obj_in: ProjectCreate, owner_id: int):
+    db_project = Project(name=obj_in.name, owner_id=owner_id)
+    db.add(db_project)
+    db.commit()
+    db.refresh(db_project)
+    return db_project
