@@ -1,30 +1,74 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import List
 from app import crud, models, schemas
-from app.schemas.task import Task, TaskBase, TaskCreate
-from app.models.user import User
 from app.api import deps
+from app.models.user import User  # Ensure this path matches your project structure
 
 router = APIRouter()
 
-@router.post("/", response_model=Task)
+@router.post("/", response_model=schemas.Task)
 def create_task(
-    *,
+    task_in: schemas.TaskCreate,
     db: Session = Depends(deps.get_db),
-    task_in: TaskCreate,
-    current_user: User = Depends(deps.get_current_user)
+    current_user: User = Depends(deps.get_current_user),
 ):
-    task = crud.task.create_with_owner(db=db, obj_in=task_in, owner_id=current_user.id)
-    return task
+    return crud.task.create_task(db=db, task_in=task_in)
 
-@router.get("/{id}", response_model=Task)
-def read_task(
-    *,
+
+@router.get("/", response_model=List[schemas.Task])
+def list_tasks(
     db: Session = Depends(deps.get_db),
-    id: int,
-    current_user: User = Depends(deps.get_current_user)
+    current_user: User = Depends(deps.get_current_user),
 ):
-    task = crud.task.get(db=db, id=id)
+    return crud.task.get_tasks(db=db)
+
+@router.get("/{task_id}", response_model=schemas.Task)
+def read_task(
+    task_id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_user),
+):
+    task = crud.task.get_task(db=db, task_id=task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
+    # Additional logic to check if user has access to task (if needed)
     return task
+
+@router.put("/{task_id}", response_model=schemas.Task)
+def update_task(
+    task_id: int,
+    task_in: schemas.TaskUpdate,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_user),
+):
+    task = crud.task.get_task(db=db, task_id=task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    # Additional logic to check if user has permission to update (if needed)
+    return crud.task.update_task(db=db, task_id=task_id, task_in=task_in)
+
+@router.delete("/{task_id}", response_model=schemas.Task)
+def delete_task(
+    task_id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_user),
+):
+    task = crud.task.get_task(db=db, task_id=task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    # Additional logic to check if user has permission to delete (if needed)
+    return crud.task.delete_task(db=db, task_id=task_id)
+
+@router.post("/{task_id}/assign", response_model=schemas.Task)
+def assign_task_to_user(
+    task_id: int,
+    user_id: int,
+    db: Session = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_user),
+):
+    task = crud.task.get_task(db=db, task_id=task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    # Additional logic to check if user has permission to assign task (if needed)
+    return crud.task.assign_task_to_user(db=db, task_id=task_id, user_id=user_id)

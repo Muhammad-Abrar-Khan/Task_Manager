@@ -1,22 +1,25 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
-from typing import Optional, List
 
 class TaskBase(BaseModel):
     title: str
-    description: str
+    description: Optional[str] = None
+    due_date: Optional[datetime] = None
 
 class TaskCreate(TaskBase):
-    project_id: int
-    parent_id: Optional[int] = None
+    pass
+
+class TaskUpdate(TaskBase):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    due_date: Optional[datetime] = None
 
 class Task(TaskBase):
     id: int
-    parent_id: Optional[int] = None
     project_id: int
-    status: str
-    owner_id: Optional[int] = None
     created_at: datetime
+    updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # Pydantic v2 configuration

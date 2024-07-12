@@ -1,19 +1,21 @@
 from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional
+from datetime import datetime
 
 class CommentBase(BaseModel):
-    content: str
+    text: str
+    task_id: int
 
 class CommentCreate(CommentBase):
-    task_id: int
-    parent_id: Optional[int] = None
+    pass
+
+class CommentUpdate(BaseModel):
+    text: Optional[str] = None
 
 class Comment(CommentBase):
     id: int
-    parent_id: Optional[int] = None
-    task_id: int
     created_at: datetime
+    updated_at: datetime
 
     class Config:
-        from_attributes = True  
+        from_attributes = True  # Pydantic v2 configuration
