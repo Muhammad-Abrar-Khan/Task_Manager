@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     SECRET_KEY: str = "48a32608b94a00425a1af4fddebebd42942cb55aa40f7c5592c772b2c86bf6eb"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    SQLALCHEMY_DATABASE_URI: str = "postgresql://postgres:mak110@localhost:5432/taskManager"
+    database_url: str = "postgresql+psycopg2://postgres:postgres@db:5432/test_db"
 
     class Config:
         env_file = ".env"

@@ -8,6 +8,7 @@ from app.schemas.token import Token  # Update import to Token
 from app.core.security import oauth2_scheme
 from app.db.session import SessionLocal
 
+
 ALGORITHM = settings.ALGORITHM
 
 def get_db() -> Generator:
