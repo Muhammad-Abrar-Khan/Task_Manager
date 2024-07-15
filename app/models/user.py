@@ -3,6 +3,8 @@ from app.db.base_class import Base
 from sqlalchemy.orm import relationship
 
 class User(Base):
+    __tablename__ = "users"  # Explicitly set the table name
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
@@ -11,3 +13,4 @@ class User(Base):
     is_admin = Column(Boolean(), default=False)
 
     profile = relationship("Profile", back_populates="user", uselist=False)
+    tasks = relationship("Task", back_populates="owner") 

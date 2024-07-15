@@ -1,8 +1,7 @@
-
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
+from app.db.base_class import Base
 from sqlalchemy.orm import relationship
-from app.db.session import Base
 
 class Comment(Base):
     __tablename__ = "comments"
@@ -12,6 +11,6 @@ class Comment(Base):
     task_id = Column(Integer, ForeignKey('tasks.id'))
     content = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     parent = relationship("Comment", remote_side=[id], backref="replies")
     task = relationship("Task", back_populates="comments")
-

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.comment import Comment
-from app.schemas.comment import CommentCreate
+from app.schemas.comment import CommentCreate, CommentUpdate
 
 def get_comments(db: Session, task_id: int):
     return db.query(Comment).filter(Comment.task_id == task_id).all()
@@ -21,3 +21,16 @@ def create_with_owner(db: Session, obj_in: CommentCreate, owner_id: int):
     db.commit()
     db.refresh(db_comment)
     return db_comment
+
+def update_comment(db: Session, db_obj: Comment, obj_in: CommentUpdate):
+    for field, value in obj_in.dict(exclude_unset=True).items():
+        setattr(db_obj, field, value)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+def delete_comment(db: Session, comment_id: int):
+    comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    db.delete(comment)
+    db.commit()
+    return comment

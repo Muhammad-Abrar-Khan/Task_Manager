@@ -8,24 +8,18 @@ from app.crud.profile import get_profile, create_profile, delete_profile, update
 
 router = APIRouter()
 
-@router.get("/", response_model=List[Profile])
+@router.get("/profile", response_model=List[Profile])
 def read_profiles(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_profile(db=db)
 
-@router.post("/", response_model=Profile)
+@router.put("/profile", response_model=Profile)
 def create_profile(profile_in: ProfileCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return create_profile(db=db, profile_in=profile_in)
 
-@router.put("/{profile_id}", response_model=Profile)
-def update_profile(profile_id: int, profile_in: ProfileUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    profile = get_profile(db=db, profile_id=profile_id)
-    if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
-    return update_profile(db=db, profile=profile, profile_in=profile_in)
+# @router.put("/profile/{profile_id}", response_model=Profile)
+# def update_profile(profile_id: int, profile_in: ProfileUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+#     profile = get_profile(db=db, profile_id=profile_id)
+#     if not profile:
+#         raise HTTPException(status_code=404, detail="Profile not found")
+#     return update_profile(db=db, profile=profile, profile_in=profile_in)
 
-@router.delete("/{profile_id}", response_model=Profile)
-def delete_profile(profile_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    profile = get_profile(db=db, profile_id=profile_id)
-    if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
-    return delete_profile(db=db, profile=profile)

@@ -7,7 +7,7 @@ from app.models.user import User  # Ensure this path matches your project struct
 
 router = APIRouter()
 
-@router.post("/", response_model=schemas.Task)
+@router.post("/project/{project}/task", response_model=schemas.Task)
 def create_task(
     task_in: schemas.TaskCreate,
     db: Session = Depends(deps.get_db),
@@ -16,14 +16,14 @@ def create_task(
     return crud.task.create_task(db=db, task_in=task_in)
 
 
-@router.get("/", response_model=List[schemas.Task])
+@router.get("/project/{project}/task", response_model=List[schemas.Task])
 def list_tasks(
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user),
 ):
     return crud.task.get_tasks(db=db)
 
-@router.get("/{task_id}", response_model=schemas.Task)
+@router.get("/project/{project}/task/{task}", response_model=schemas.Task)
 def read_task(
     task_id: int,
     db: Session = Depends(deps.get_db),
@@ -35,7 +35,7 @@ def read_task(
     # Additional logic to check if user has access to task (if needed)
     return task
 
-@router.put("/{task_id}", response_model=schemas.Task)
+@router.put("/project/{project}/task/{task}", response_model=schemas.Task)
 def update_task(
     task_id: int,
     task_in: schemas.TaskUpdate,
@@ -48,7 +48,7 @@ def update_task(
     # Additional logic to check if user has permission to update (if needed)
     return crud.task.update_task(db=db, task_id=task_id, task_in=task_in)
 
-@router.delete("/{task_id}", response_model=schemas.Task)
+@router.delete("/project/{project}/task/{task}", response_model=schemas.Task)
 def delete_task(
     task_id: int,
     db: Session = Depends(deps.get_db),
@@ -60,7 +60,7 @@ def delete_task(
     # Additional logic to check if user has permission to delete (if needed)
     return crud.task.delete_task(db=db, task_id=task_id)
 
-@router.post("/{task_id}/assign", response_model=schemas.Task)
+@router.post("/project/{project}/task/{task}/assign", response_model=schemas.Task)
 def assign_task_to_user(
     task_id: int,
     user_id: int,

@@ -3,14 +3,15 @@ from typing import Optional
 from datetime import datetime
 
 class CommentBase(BaseModel):
-    text: str
+    content: str
     task_id: int
+    parent_id: Optional[int] = None
 
 class CommentCreate(CommentBase):
     pass
 
 class CommentUpdate(BaseModel):
-    text: Optional[str] = None
+    content: Optional[str] = None
 
 class Comment(CommentBase):
     id: int

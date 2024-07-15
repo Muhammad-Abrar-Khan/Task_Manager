@@ -24,4 +24,4 @@ COPY . /code/
 WORKDIR /code
 
 # Command to run the application using uvicorn
-CMD ["/wait-for-it.sh", "db:5432", "--", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/wait-for-it.sh", "db:5432", "--", "alembic", "upgrade", "head", "&&", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

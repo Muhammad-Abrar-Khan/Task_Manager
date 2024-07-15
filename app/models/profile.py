@@ -6,7 +6,7 @@ class Profile(Base):
     __tablename__ = "profiles"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # Corrected table name
     bio = Column(String, index=True)
     location = Column(String, index=True)
 
