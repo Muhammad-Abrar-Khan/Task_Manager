@@ -2,22 +2,24 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app import crud, models, schemas
-from app.api import deps
+from app.api.deps import get_session
+from app.core.utils import get_current_user
+# from app.api import deps
 
 router = APIRouter()
 
 @router.get("/project", response_model=List[schemas.Project])
 def list_projects(
-    db: Session = Depends(deps.get_db),
-    current_user: models.user.User = Depends(deps.get_current_user)  
+    db: Session = Depends(get_session),
+    current_user: models.user.User = Depends(get_current_user)  
 ):
     return crud.project.get_projects(db=db)
 
 @router.get("/project/{project}", response_model=schemas.Project)
 def read_project(
     project_id: int,
-    db: Session = Depends(deps.get_db),
-    current_user: models.user.User = Depends(deps.get_current_user)  
+    db: Session = Depends(get_session),
+    current_user: models.user.User = Depends(get_current_user)  
 ):
     project = crud.project.get_project(db=db, project_id=project_id)
     if not project:
@@ -31,7 +33,7 @@ def read_project(
 # def update_project(
 #     project_id: int,
 #     project_in: schemas.ProjectUpdate,
-#     db: Session = Depends(deps.get_db),
+#     db: Session = Depends(deps.get_session),
 #     current_user: models.user.User = Depends(deps.get_current_user)  
 # ):
 #     project = crud.project.get_project(db=db, project_id=project_id)

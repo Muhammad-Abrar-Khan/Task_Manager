@@ -1,7 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_session
+from app.core.utils import get_current_user
 from app.schemas.project import Project,ProjectBase,ProjectCreate,ProjectInDB,ProjectInDBBase,ProjectUpdate
 from app.models.user import User
 from app.crud.project import get_project,get_projects,create_project, create_with_owner
@@ -10,7 +11,7 @@ router = APIRouter()
 
 @router.get("/admin/project", response_model=List[Project])
 def list_all_projects(
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
     if not current_user.is_superuser:
@@ -20,7 +21,7 @@ def list_all_projects(
 @router.post("/admin/project", response_model=Project)
 def create_project(
     project_in: ProjectCreate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
     if not current_user.is_superuser:
@@ -31,7 +32,7 @@ def create_project(
 def update_project(
     project_id: int,
     project_in: ProjectUpdate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
     if not current_user.is_superuser:
@@ -41,7 +42,7 @@ def update_project(
 @router.delete("/admin/project/{project}", response_model=Project)
 def delete_project(
     project_id: int,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
     if not current_user.is_superuser:
@@ -52,7 +53,7 @@ def delete_project(
 def assign_project_to_user(
     project_id: int,
     user_id: int,
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
     if not current_user.is_superuser:

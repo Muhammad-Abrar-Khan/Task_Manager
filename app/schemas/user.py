@@ -1,27 +1,72 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
-from datetime import datetime
+# from pydantic import BaseModel, EmailStr
+# from typing import Optional
+# from datetime import datetime
 
-class UserBase(BaseModel):
+# class UserBase(BaseModel):
+#     email: EmailStr
+#     is_active: Optional[bool] = True
+#     is_superuser: Optional[bool] = False
+
+# class UserCreate(UserBase):
+#     name:str
+#     password: str
+
+# class UserUpdate(BaseModel):
+#     email: Optional[EmailStr] = None
+#     full_name: Optional[str] = None
+#     is_active: Optional[bool] = None
+#     is_superuser: Optional[bool] = None
+
+# class User(UserBase):
+#     id: int
+#     created_at: datetime
+#     updated_at: datetime
+
+#     class Config:
+#         orm_mode = True  # Pydantic v1 compatibility setting for SQLAlchemy models
+
+from pydantic import BaseModel, EmailStr
+import datetime
+from typing import Optional
+
+
+class UserCreate(BaseModel):
+    username: str
     email: EmailStr
-    full_name: Optional[str] = None
+    password: str
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
 
-class UserCreate(UserBase):
-    password: str
-
-class UserUpdate(UserBase):
+class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
-    password: Optional[str] = None
     full_name: Optional[str] = None
     is_active: Optional[bool] = None
     is_superuser: Optional[bool] = None
 
-class User(UserBase):
+class UserResponse(BaseModel):
     id: int
-    created_at: datetime
-    updated_at: datetime
+    username: str
+    email: str
 
     class Config:
-        from_attributes = True  # Pydantic v2 configuration
+        orm_mode = True
+
+class TokenSchema(BaseModel):
+    access_token: str
+    refresh_token: str
+
+class TokenCreate(BaseModel):
+    user_id: int
+    access_token: str
+    refresh_token: str
+    status: bool
+    created_date: datetime.datetime
+
+class RequestDetails(BaseModel):
+    email: str
+    password: str
+
+class ChangePassword(BaseModel):
+    email: str
+    old_password: str
+    new_password: str

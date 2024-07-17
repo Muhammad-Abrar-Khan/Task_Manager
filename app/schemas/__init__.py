@@ -1,5 +1,5 @@
 from .project import Project, ProjectCreate, ProjectUpdate
-from .user import User, UserCreate, UserUpdate
+from .user import UserResponse, UserCreate, UserUpdate
 from .task import Task, TaskCreate, TaskUpdate
 from .comment import Comment, CommentCreate, CommentUpdate
 
@@ -13,7 +13,7 @@ __all__ = [
     "TaskCreate",
     "TaskUpdate",
     "TaskBase",
-    "User",
+    "UserResponse",
     "UserCreate",
     "UserUpdate",
     "Comment",

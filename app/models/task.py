@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
-from app.db.base_class import Base
 from sqlalchemy.orm import relationship
+from app.db.base_class import Base
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -16,5 +16,9 @@ class Task(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     parent = relationship("Task", remote_side=[id], backref="subtasks")
     project = relationship("Project", back_populates="tasks")
-    owner_id = Column(Integer, ForeignKey("users.id"))  # Use the correct table name here
-    owner = relationship("User", back_populates="tasks")  # Ensure this relationship is correct
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="tasks", primaryjoin="Task.owner_id == User.id")
+    
+    # Define the comments relationship
+    comments = relationship("Comment", back_populates="task")
+

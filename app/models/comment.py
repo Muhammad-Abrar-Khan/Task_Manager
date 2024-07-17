@@ -14,3 +14,5 @@ class Comment(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     parent = relationship("Comment", remote_side=[id], backref="replies")
     task = relationship("Task", back_populates="comments")
+    author_id = Column(Integer, ForeignKey("users.id"))  # Assuming author_id refers to User.id
+    author = relationship("User", back_populates="comments")  # Define the author relationship
