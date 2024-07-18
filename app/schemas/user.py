@@ -38,10 +38,19 @@ class UserCreate(BaseModel):
     is_superuser: Optional[bool] = False
 
 class UserUpdate(BaseModel):
+    username: Optional[str] = None
     email: Optional[EmailStr] = None
-    full_name: Optional[str] = None
     is_active: Optional[bool] = None
     is_superuser: Optional[bool] = None
+
+    class Config:
+        orm_mode = True
+        
+# class UserUpdate(BaseModel):
+#     email: Optional[EmailStr] = None
+#     full_name: Optional[str] = None
+#     is_active: Optional[bool] = None
+#     is_superuser: Optional[bool] = None
 
 class UserResponse(BaseModel):
     id: int

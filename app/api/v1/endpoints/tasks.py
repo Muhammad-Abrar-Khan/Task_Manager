@@ -4,7 +4,7 @@ from typing import List
 from app import crud, models, schemas
 from app.api.deps import get_session
 from app.core.utils import get_current_user
-from app.models.user import User  # Ensure this path matches your project structure
+from app.models.user import User 
 
 router = APIRouter()
 

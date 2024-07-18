@@ -38,26 +38,20 @@ from app.schemas.user import RequestDetails, TokenSchema,UserCreate,UserResponse
 from app.models.user import User, TokenTable
 from app.core.utils import get_hashed_password, verify_password, create_access_token, create_refresh_token
 from app.core.security import JWTBearer, decodeJWT
+from app.crud.user import create_user
 
 router = APIRouter()
 
-
 @router.post("/register", response_model=UserResponse)
-def register_user(user: UserCreate, session: Session = Depends(get_session)):
-    existing_user = session.query(User).filter_by(email=user.email).first()
+def register_user(user: UserCreate, db: Session = Depends(get_session)):
+    existing_user = db.query(User).filter_by(email=user.email).first()
     if existing_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
-    encrypted_password = get_hashed_password(user.password)
+    new_user = create_user(db=db, user=user)
 
-    new_user = User(username=user.username, email=user.email, password=encrypted_password)
-
-    session.add(new_user)
-    session.commit()
-    session.refresh(new_user)
-
-    # Return the full UserResponse including the newly created user's data
     return UserResponse(id=new_user.id, username=new_user.username, email=new_user.email)
+
 
 @router.post('/login', response_model=TokenSchema)
 def login(request: RequestDetails, db: Session = Depends(get_session)):

@@ -12,9 +12,6 @@ class User(Base):
     password = Column(String(100), nullable=False)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
-    # created_at = Column(DateTime, default=datetime.now(timezone.utc))
-    # updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-
     profile = relationship("Profile", back_populates="user", uselist=False)
     tasks = relationship("Task", back_populates="owner", primaryjoin="User.id == Task.owner_id")
     comments = relationship("Comment", back_populates="author")
