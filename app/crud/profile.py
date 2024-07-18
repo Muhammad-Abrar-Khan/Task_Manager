@@ -2,24 +2,22 @@ from sqlalchemy.orm import Session
 from app.models.profile import Profile
 from app.schemas.profile import ProfileCreate, ProfileUpdate
 
-def get_profile(db: Session, profile_id: int):
-    return db.query(Profile).filter(Profile.id == profile_id).first()
+def get_profile(db: Session, user_id: int):
+    return db.query(Profile).filter(Profile.user_id == user_id).first()
 
-def create_profile(db: Session, profile_in: ProfileCreate):
-    db_profile = Profile(**profile_in.dict())
+def get_profiles(db: Session):
+    return db.query(Profile).all()
+
+def create_profile(db: Session, profile: ProfileCreate, user_id: int):
+    db_profile = Profile(**profile.dict(), user_id=user_id)
     db.add(db_profile)
     db.commit()
     db.refresh(db_profile)
     return db_profile
 
-def update_profile(db: Session, profile: Profile, profile_in: ProfileUpdate):
-    for field, value in profile_in.dict().items():
-        setattr(profile, field, value)
+def update_profile(db: Session, db_profile: Profile, profile: ProfileUpdate):
+    for key, value in profile.dict().items():
+        setattr(db_profile, key, value)
     db.commit()
-    db.refresh(profile)
-    return profile
-
-def delete_profile(db: Session, profile: Profile):
-    db.delete(profile)
-    db.commit()
-    return profile
+    db.refresh(db_profile)
+    return db_profile

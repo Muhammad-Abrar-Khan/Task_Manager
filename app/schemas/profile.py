@@ -1,8 +1,9 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class ProfileBase(BaseModel):
-    bio: str
-    website: str
+    bio: Optional[str] = None
+    picture: Optional[str] = None
 
 class ProfileCreate(ProfileBase):
     pass
@@ -12,5 +13,7 @@ class ProfileUpdate(ProfileBase):
 
 class Profile(ProfileBase):
     id: int
+    user_id: int
+
     class Config:
         orm_mode = True
