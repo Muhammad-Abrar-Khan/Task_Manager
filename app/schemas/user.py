@@ -1,30 +1,3 @@
-# from pydantic import BaseModel, EmailStr
-# from typing import Optional
-# from datetime import datetime
-
-# class UserBase(BaseModel):
-#     email: EmailStr
-#     is_active: Optional[bool] = True
-#     is_superuser: Optional[bool] = False
-
-# class UserCreate(UserBase):
-#     name:str
-#     password: str
-
-# class UserUpdate(BaseModel):
-#     email: Optional[EmailStr] = None
-#     full_name: Optional[str] = None
-#     is_active: Optional[bool] = None
-#     is_superuser: Optional[bool] = None
-
-# class User(UserBase):
-#     id: int
-#     created_at: datetime
-#     updated_at: datetime
-
-#     class Config:
-#         orm_mode = True  # Pydantic v1 compatibility setting for SQLAlchemy models
-
 from pydantic import BaseModel, EmailStr
 import datetime
 from typing import Optional
@@ -45,12 +18,6 @@ class UserUpdate(BaseModel):
 
     class Config:
         orm_mode = True
-        
-# class UserUpdate(BaseModel):
-#     email: Optional[EmailStr] = None
-#     full_name: Optional[str] = None
-#     is_active: Optional[bool] = None
-#     is_superuser: Optional[bool] = None
 
 class UserResponse(BaseModel):
     id: int

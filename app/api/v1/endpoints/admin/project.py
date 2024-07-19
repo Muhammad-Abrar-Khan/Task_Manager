@@ -5,7 +5,7 @@ from app.api.deps import get_session
 from app.core.utils import get_current_user
 from app.schemas.project import Project,ProjectBase,ProjectCreate,ProjectInDB,ProjectInDBBase,ProjectUpdate
 from app.models.user import User
-from app.crud.project import get_project,get_projects,create_project, create_with_owner
+from app.crud.project import assign_project_to_user, get_project,get_projects,create_project, create_with_owner,update_project
 
 router = APIRouter()
 
@@ -26,20 +26,25 @@ def create_project(
 ):
     if not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="Not authorized")
-    return create_project(db=db, project_in=project_in)
+    return create_with_owner(db=db, obj_in=project_in, owner_id=current_user.id)
 
-@router.put("/admin/project/{project}", response_model=Project)
-def update_project(
+@router.put("/admin/project/{project_id}", response_model=Project)
+def update_project_details(
     project_id: int,
-    project_in: ProjectUpdate,
+    project_update: ProjectUpdate,
     db: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
     if not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="Not authorized")
-    return update_project(db=db, project_id=project_id, project_in=project_in)
+    
+    db_project = get_project(db=db, project_id=project_id)
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    return update_project(db=db, project=db_project, project_update=project_update)
 
-@router.delete("/admin/project/{project}", response_model=Project)
+@router.delete("/admin/project/{project_id}", response_model=dict)
 def delete_project(
     project_id: int,
     db: Session = Depends(get_session),
@@ -47,10 +52,17 @@ def delete_project(
 ):
     if not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="Not authorized")
-    return delete_project(db=db, project_id=project_id)
+    
+    db_project = get_project(db=db, project_id=project_id)
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    db.delete(db_project)
+    db.commit()
+    return {"message": "Project deleted successfully"}
 
-@router.post("/admin/project/{project}/assign", response_model=Project)
-def assign_project_to_user(
+@router.post("/admin/project/{project_id}/assign/{user_id}", response_model=Project)
+def assign_project(
     project_id: int,
     user_id: int,
     db: Session = Depends(get_session),
@@ -58,4 +70,9 @@ def assign_project_to_user(
 ):
     if not current_user.is_superuser:
         raise HTTPException(status_code=403, detail="Not authorized")
-    return assign_project_to_user(db=db, project_id=project_id, user_id=user_id)
+
+    assigned_project = assign_project_to_user(db=db, project_id=project_id, user_id=user_id)
+    if assigned_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    return assigned_project

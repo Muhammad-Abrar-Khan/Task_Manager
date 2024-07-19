@@ -24,7 +24,6 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
-
 def get_users(db: Session):
     return db.query(User).all()
 
@@ -36,20 +35,6 @@ def update_user(db: Session, user_id: int, user_update: UserUpdate):
         db.commit()
         db.refresh(db_user)
     return db_user
-
-# def update_user(db: Session, user_id: int, user_in: UserUpdate) -> Optional[User]:
-#     db_user = db.query(User).filter(User.id == user_id).first()
-#     if not db_user:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     update_data = user_in.dict(exclude_unset=True)
-#     for key, value in update_data.items():
-#         setattr(db_user, key, value)
-#     if user_in.password:
-#         hashed_password = get_hashed_password(user_in.password)
-#         db_user.hashed_password = hashed_password
-#     db.commit()
-#     db.refresh(db_user)
-#     return db_user
 
 
 def delete_user(db: Session, user_id: int) -> Optional[User]:

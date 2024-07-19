@@ -1,7 +1,6 @@
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import JWTError, jwt  # Import JWTError and jwt from python-jose library
-# from app.core.utils import  JWT_SECRET_KEY, ALGORITHM  # Ensure these are correctly imported
+from jose import JWTError, jwt  
 
 JWT_SECRET_KEY = "narscbjim@$@&^@&%^&RFghgjvbdsha"  # should be kept secret
 ALGORITHM = "HS256"
