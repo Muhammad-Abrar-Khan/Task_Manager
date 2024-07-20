@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.project import Project
 from app.schemas.project import ProjectCreate, ProjectUpdate
 

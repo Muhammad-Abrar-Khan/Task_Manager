@@ -23,3 +23,4 @@ class TokenTable(Base):
     refresh_token = Column(String(450), nullable=False)
     status = Column(Boolean, default=True)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))
+

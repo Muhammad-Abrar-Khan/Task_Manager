@@ -13,3 +13,4 @@ class Project(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     owner_id = Column(Integer, ForeignKey('users.id'))
     tasks = relationship("Task", back_populates="project")
+

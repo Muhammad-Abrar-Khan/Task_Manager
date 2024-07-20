@@ -4,7 +4,6 @@ from typing import List
 from app import crud, models, schemas
 from app.api.deps import get_session
 from app.core.utils import get_current_user
-# from app.api import deps
 
 router = APIRouter()
 
@@ -15,16 +14,13 @@ def list_projects(
 ):
     return crud.project.get_projects(db=db)
 
-@router.get("/project/{project}", response_model=schemas.Project)
+@router.get("/project/{project_id}", response_model=schemas.Project)
 def read_project(
     project_id: int,
     db: Session = Depends(get_session),
-    current_user: models.user.User = Depends(get_current_user)  
+    current_user: models.user.User = Depends(get_current_user)
 ):
     project = crud.project.get_project(db=db, project_id=project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
-    # Check if the user is assigned to the project (optional logic)
-    if current_user not in project.users:
-        raise HTTPException(status_code=403, detail="User not assigned to this project")
     return project
