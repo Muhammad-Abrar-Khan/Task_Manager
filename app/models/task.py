@@ -10,7 +10,7 @@ class Task(Base):
     project_id = Column(Integer, ForeignKey('projects.id'))
     title = Column(String, index=True)
     description = Column(String)
-    due_date = Column(DateTime, nullable=True)  # Add this line
+    due_date = Column(DateTime, nullable=True) 
     status = Column(String, default="pending")
     assignee_id = Column(Integer, ForeignKey('users.id'), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -20,8 +20,6 @@ class Task(Base):
     owner = relationship("User", back_populates="tasks", primaryjoin="Task.owner_id == User.id")
     comments = relationship("Comment", back_populates="task")
 
-        # parent_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)\
-            # parent = relationship("Task", remote_side=[id], backref="subtasks")
 
 
 

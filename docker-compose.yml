@@ -1,11 +1,9 @@
-# docker-compose.yml
-
 version: "3"
 services:
   db:
     image: postgres:11
     ports:
-      - "5433:5432" # Changed host port from 5432 to 5433
+      - "5433:5432" 
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

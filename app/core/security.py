@@ -2,7 +2,7 @@ from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt  
 
-JWT_SECRET_KEY = "narscbjim@$@&^@&%^&RFghgjvbdsha"  # should be kept secret
+JWT_SECRET_KEY = "narscbjim@$@&^@&%^&RFghgjvbdsha" 
 ALGORITHM = "HS256"
 
 class JWTBearer(HTTPBearer):

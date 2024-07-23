@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, users, projects, tasks, comments, profile
+from app.api.v1.endpoints import auth, projects, tasks, comments, profile,users
 from app.api.v1.endpoints.admin import project, user
 
 api_router = APIRouter()
