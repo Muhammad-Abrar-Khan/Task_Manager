@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskUpdate
@@ -6,14 +7,15 @@ def create_task(db: Session, project_id: int, task_in: TaskCreate, owner_id: int
     db_task = Task(
         title=task_in.title,
         description=task_in.description,
+        due_date=task_in.due_date,        
         project_id=project_id,
-        owner_id=owner_id
+        owner_id=owner_id,
+        updated_at=func.now()  
     )
     db.add(db_task)
     db.commit()
     db.refresh(db_task)
     return db_task
-
 
 def get_tasks(db: Session, project_id: int):
     return db.query(Task).filter(Task.project_id == project_id).all()

@@ -8,8 +8,6 @@ from app.models.user import User
 
 router = APIRouter()
 
-# main router
-
 @router.post("/project/{project_id}/task", response_model=schemas.Task)
 def create_task(
     project_id: int,
@@ -74,6 +72,14 @@ def assign_task_to_user(
     current_user: User = Depends(get_current_user),
 ):
     task = crud.task.get_task(db=db, task_id=task_id)
-    if not task or task.project_id != project_id:
+    if not task:
         raise HTTPException(status_code=404, detail="Task not found")
+    if task.project_id != project_id:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    user = crud.user.get_user(db=db, user_id=user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User does not exist")
+
     return crud.task.assign_task_to_user(db=db, task_id=task_id, user_id=user_id)
+

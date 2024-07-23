@@ -22,4 +22,4 @@ class Task(TaskBase):
     updated_at: datetime
 
     class Config:
-        from_attributes = True  # Pydantic v2 configuration
+        from_attributes = True  
